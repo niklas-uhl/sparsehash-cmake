@@ -21,7 +21,7 @@ ExternalProject_Add(
 )
 ExternalProject_Get_Property(sparsehash INSTALL_DIR)
 
-add_library(sparsehash::sparsehash INTERFACE IMPORTED)
+add_library(sparsehash::sparsehash INTERFACE)
 file(MAKE_DIRECTORY "${INSTALL_DIR}/include")
 target_include_directories(sparsehash::sparsehash INTERFACE "${INSTALL_DIR}/include")
 add_dependencies(sparsehash::sparsehash sparsehash)
