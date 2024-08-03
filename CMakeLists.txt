@@ -21,10 +21,11 @@ ExternalProject_Add(
 )
 ExternalProject_Get_Property(sparsehash INSTALL_DIR)
 
-add_library(sparsehash::sparsehash INTERFACE)
+add_library(sparsehash_sparsehash INTERFACE)
+add_library(sparsehash::sparsehash ALIAS sparsehash_sparsehash)
 file(MAKE_DIRECTORY "${INSTALL_DIR}/include")
-target_include_directories(sparsehash::sparsehash INTERFACE "${INSTALL_DIR}/include")
-add_dependencies(sparsehash::sparsehash sparsehash)
+target_include_directories(sparsehash_sparsehash INTERFACE "${INSTALL_DIR}/include")
+add_dependencies(sparsehash_sparsehash sparsehash)
 
 if(SPARSEHASH_BUILD_EXAMPLES)
   add_executable(example example.cpp)
