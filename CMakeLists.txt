@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.5)
 
 project(
   Sparsehash
@@ -9,10 +9,6 @@ project(
 
 option(SPARSEHASH_BUILD_EXAMPLES "Build examples" ${PROJECT_IS_TOP_LEVEL})
 
-add_library(sparsehash_sparsehash INTERFACE)
-
-target_include_directories(sparsehash_sparsehash INTERFACE "src")
-add_library(sparsehash::sparsehash ALIAS sparsehash_sparsehash)
 include(CheckSymbolExists)
 include(CheckTypeSize)
 include(CheckSourceCompiles)
@@ -119,9 +115,15 @@ unset(CMAKE_REQUIRED_QUIET)
 set(SPARSEHASH_HASH "HASH_NAMESPACE::hash")
 set(_END_GOOGLE_NAMESPACE_ "}")
 set(_START_GOOGLE_NAMESPACE_ "namespace google {")
-configure_file(src/sparseconfig.h.in
-               ${CMAKE_BINARY_DIR}/sparsehash/internal/sparseconfig.h)
-target_include_directories(sparsehash_sparsehash INTERFACE ${CMAKE_BINARY_DIR})
+configure_file(src/sparseconfig.h.in sparsehash/internal/sparseconfig.h @ONLY)
+
+add_library(sparsehash_sparsehash INTERFACE)
+target_include_directories(
+  sparsehash_sparsehash
+  INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src>)
+add_library(sparsehash::sparsehash ALIAS sparsehash_sparsehash)
+target_include_directories(sparsehash_sparsehash
+                           INTERFACE $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>)
 
 if(SPARSEHASH_BUILD_EXAMPLES)
   add_executable(example example.cpp)
