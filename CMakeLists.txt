@@ -121,17 +121,25 @@ add_library(sparsehash_sparsehash INTERFACE)
 target_include_directories(
   sparsehash_sparsehash
   INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src>)
+target_include_directories(
+  sparsehash_sparsehash
+  INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
+
 add_library(sparsehash::sparsehash ALIAS sparsehash_sparsehash)
-target_include_directories(sparsehash_sparsehash INTERFACE $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>)
-set_target_properties(sparsehash_sparsehash PROPERTIES
-  EXPORT_NAME sparsehash
-)
-set(CMAKE_VERIFY_INTERFACE_HEADERS_SETS TRUE)
-target_sources(sparsehash_sparsehash
-  INTERFACE
-  FILE_SET HEADERS
-  BASE_DIRS ${CMAKE_CURRENT_LIST_DIR}/src
-  )
+set_target_properties(sparsehash_sparsehash PROPERTIES EXPORT_NAME sparsehash)
+
+# target_sources( sparsehash_sparsehash INTERFACE FILE_SET HEADERS BASE_DIRS
+# src/ ${CMAKE_CURRENT_BINARY_DIR} FILES src/google src/sparsehash
+# ${CMAKE_CURRENT_BINARY_DIR}/sparsehash/internal/sparseconfig.h)
+
+include(GNUInstallDirs)
+install(
+  DIRECTORY src/google src/sparsehash
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  FILES_MATCHING
+  REGEX "(sparse|dense)_hash_(map|set)"
+  PATTERN sparsetable
+  PATTERN *.h)
 
 if(SPARSEHASH_BUILD_EXAMPLES)
   add_executable(example example.cpp)
@@ -139,15 +147,20 @@ if(SPARSEHASH_BUILD_EXAMPLES)
 endif()
 
 
-include(GNUInstallDirs)
-install(
-  TARGETS sparsehash_sparsehash
-  EXPORT sparsehash
-  FILE_SET HEADERS
-  INCLUDES
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+target_include_directories(
+  sparsehash_sparsehash
+  INTERFACE $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+install(TARGETS sparsehash_sparsehash EXPORT sparsehash)
 
-install(EXPORT sparsehash
+install(
+  EXPORT sparsehash
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/sparsehash
   NAMESPACE sparsehash::
+  FILE sparsehashConfig.cmake
 )
+# include(CMakePackageConfigHelpers)
+# write_basic_package_version_file(
+#   foo
+#   COMPATIBILITY ExactVersion
+# )
