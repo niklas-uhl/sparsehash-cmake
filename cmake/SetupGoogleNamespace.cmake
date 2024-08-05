@@ -1,0 +1,5 @@
+macro(setup_google_namespace namespace)
+  set(GOOGLE_NAMESPACE "::${namespace}")
+  set(_END_GOOGLE_NAMESPACE_ "}")
+  set(_START_GOOGLE_NAMESPACE_ "namespace ${namespace} {")
+endmacro()
