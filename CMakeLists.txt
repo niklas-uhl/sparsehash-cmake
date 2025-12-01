@@ -58,7 +58,7 @@ target_include_directories(
   INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/src>)
 add_library(sparsehash::sparsehash ALIAS sparsehash_sparsehash)
 target_include_directories(sparsehash_sparsehash
-                           INTERFACE $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>)
+                           INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
 
 if(SPARSEHASH_BUILD_EXAMPLES)
   add_executable(example example.cpp)
